@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """Griffin-Lim related modules."""
 
 # Copyright 2019 Tomoki Hayashi

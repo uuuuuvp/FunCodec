@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Copyright 2018  David Snyder
 # Apache 2.0
 

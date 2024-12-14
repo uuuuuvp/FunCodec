@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os
 import torch
 from funcodec.tasks.gan_speech_codec import GANSpeechCodecTask

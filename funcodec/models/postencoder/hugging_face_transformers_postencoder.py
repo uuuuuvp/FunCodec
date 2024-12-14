@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 #  2021, University of Stuttgart;  Pavel Denisov
 #  Apache 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
 

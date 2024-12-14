@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """Initialize modules for espnet2 neural networks."""
 
 import math

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Copyright FunCodec (https://github.com/alibaba-damo-academy/FunCodec). All Rights Reserved.
 #  MIT License  (https://opensource.org/licenses/MIT)
 

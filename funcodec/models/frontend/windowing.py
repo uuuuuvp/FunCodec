@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 #  2020, Technische Universität München;  Ludwig Kürzinger
 #  Apache 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
 

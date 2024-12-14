@@ -4,3 +4,11 @@
 funcodec.egg-info
 build/
 dist/
+./*/__pycache__
+./*/*/__pycache__
+
+egs/LibriTTS/codec/corpus/*
+egs/LibriTTS/codec/dump
+egs/LibriTTS/codec/exp
+
+*.pyc

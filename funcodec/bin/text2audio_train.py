@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os
 import torch
 from funcodec.tasks.text2audio_generation import Text2AudioGenTask

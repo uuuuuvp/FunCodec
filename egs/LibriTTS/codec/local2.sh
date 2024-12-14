@@ -3,8 +3,8 @@
 . ./path.sh || exit 1;
 
 # machines configuration
-gpu_devices="6,7"
-gpu_num=2
+gpu_devices="0"
+gpu_num=1
 count=1
 
 # general configuration
@@ -12,14 +12,14 @@ feats_dir="."
 exp_dir="."
 dumpdir=dump/LibriTTS
 stage=0
-stop_stage=8
+stop_stage=4
 corpus_dir=corpus/LibriTTS
 
 # training related
 tag=""
 train_set=train
 valid_set=dev
-train_config=conf/encodec_lstm_16k_n32_600k_step_rmseg.yaml
+train_config=conf/freqcodec_mag_angle_16k_n32_600k_step.yaml
 init_param=
 state_dir=LibriTTS_states
 
@@ -66,53 +66,23 @@ else
     _ngpu=0
 fi
 
-# Data downloading
-if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
-  echo "Stage 0: data downloading"
-
-  if [ ! -d ${corpus_dir} ]; then
-    mkdir -p ${corpus_dir}
-  fi
-
-  echo "download training set to ${corpus_dir}"
-  wget --no-check-certificate https://www.openslr.org/resources/60/train-clean-100.tar.gz -P ${corpus_dir}/
-  wget --no-check-certificate https://www.openslr.org/resources/60/train-clean-360.tar.gz -P ${corpus_dir}/
-  wget --no-check-certificate https://www.openslr.org/resources/60/train-other-500.tar.gz -P ${corpus_dir}/
-
-  echo "download dev set to ${corpus_dir}"
-  wget --no-check-certificate https://www.openslr.org/resources/60/dev-clean.tar.gz -P ${corpus_dir}/
-  wget --no-check-certificate https://www.openslr.org/resources/60/dev-other.tar.gz -P ${corpus_dir}/
-
-  echo "download test set to ${corpus_dir}"
-  wget --no-check-certificate https://www.openslr.org/resources/60/test-clean.tar.gz -P ${corpus_dir}/
-  wget --no-check-certificate https://www.openslr.org/resources/60/test-other.tar.gz -P ${corpus_dir}/
-
-  cd ${corpus_dir}/
-  tar zxf train-clean-100.tar.gz train-clean-360.tar.gz train-other-500.tar.gz
-  tar zxf dev-clean.tar.gz dev-other.tar.gz
-  tar zxf test-clean.tar.gz test-other.tar.gz
-
-  # remove the duplicated LibriTTS directory
-  mv ${corpus_dir}/LibriTTS/* ${corpus_dir}/
-  rm -rf ${corpus_dir}/LibriTTS
-fi
 
 # Data collecting
 if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
   echo "Stage 1: collecting data sets."
   mkdir -p ${dumpdir}/train_24k ${dumpdir}/dev_24k
 
-  for name in train-clean-100 train-clean-360 train-other-500; do
+  for name in train-clean-100 train-clean-360; do
     echo "collecting ${name} in to ${dumpdir}/train_24k/wav.scp"
     find ${corpus_dir}/${name}/ -iname "*.wav" | awk -F '/' '{print $NF, $0}' | sort >> ${dumpdir}/train_24k/wav.scp
   done
 
-  for name in dev-clean dev-other; do
+  for name in dev-clean; do
     echo "collecting ${name} in to ${dumpdir}/dev_24k/wav.scp"
     find ${corpus_dir}/${name}/ -iname "*.wav" | awk -F '/' '{print $NF, $0}' | sort >> ${dumpdir}/dev_24k/wav.scp
   done
 
-  for name in test-clean test-other; do
+  for name in test-clean; do
     mkdir -p ${dumpdir}/${name}_24k
     echo "collecting ${name} in to ${dumpdir}/${name}_24k/wav.scp"
     find ${corpus_dir}/${name}/ -iname "*.wav" | awk -F '/' '{print $NF, $0}' | sort > ${dumpdir}/${name}_24k/wav.scp
@@ -124,7 +94,7 @@ if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
   echo "Stage 2: Dump data to ark."
   for name in train dev; do
     echo "Dump ${name} set to ark files ${dumpdir}/${name}/arks/wav.*.ark"
-    torchrun --nproc_per_node=32 --master_port=1234 scripts/dump_to_wav_ark.py \
+    torchrun --nproc_per_node=1 --master_port=1234 scripts/dump_to_wav_ark.py \
       --wav_scp ${dumpdir}/${name}_24k/wav.scp \
       --out_dir ${dumpdir}/${name}/arks \
       --sample_rate 16000
@@ -134,9 +104,9 @@ if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
     cat ${dumpdir}/${name}/arks/length.*.txt | shuf > exp/${state_dir}/${name}/speech_shape
   done
 
-  for name in test-clean test-other; do
+  for name in test-clean; do
     echo "Resample ${name} set to ${dumpdir}/${name}/wavs/*.wav"
-    torchrun --nproc_per_node=32 --master_port=1234 scripts/convert_to_wav.py \
+    torchrun --nproc_per_node=1 --master_port=1234 scripts/convert_to_wav.py \
       --wav_scp ${dumpdir}/${name}_24k/wav.scp \
       --out_dir ${dumpdir}/${name}/wavs \
       --sample_rate 16000

@@ -100,7 +100,7 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
   git clone https://github.com/MTG/mtg-jamendo-dataset.git
   cd mtg-jamendo-dataset
   pip install -r scripts/requirements.txt
-  python3 scripts/download/download.py \
+  python scripts/download/download.py \
     --dataset raw_30s \
     --type audio --unpack --remove \
     ./Jamendo

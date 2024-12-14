@@ -1,6 +1,4 @@
-#!/usr/bin/env python3
 import argparse
-
 from modelscope.pipelines import pipeline
 from modelscope.utils.constant import Tasks
 

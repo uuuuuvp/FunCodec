@@ -78,7 +78,7 @@ encoder_choices = ClassChoices(
         encodec_seanet_encoder_2d=SEANetEncoder2d,
     ),
     type_check=torch.nn.Module,
-    default="encodec_seanet_encoder",
+    default="encodec_seanet_encoder_2d",
 )
 quantizer_choices = ClassChoices(
     "quantizer",
@@ -96,7 +96,7 @@ decoder_choices = ClassChoices(
         encodec_seanet_decoder_2d=SEANetDecoder2d,
     ),
     type_check=torch.nn.Module,
-    default="encodec_seanet_decoder",
+    default="encodec_seanet_decoder_2d",
 )
 model_choices = ClassChoices(
     "model",
@@ -106,7 +106,7 @@ model_choices = ClassChoices(
         codec_semantic_aug=CodecSemanticAug,
     ),
     type_check=AbsGANESPnetModel,
-    default="encodec",
+    default="FreqCodec",
 )
 discriminator_choices = ClassChoices(
     "discriminator",

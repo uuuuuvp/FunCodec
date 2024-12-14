@@ -12,6 +12,18 @@ from funcodec.modules.normed_modules.conv import SConv1d, SConv2d
 from funcodec.modules.normed_modules.lstm import SLSTM
 from funcodec.modules.activations import get_activation
 
+class PrintShape(nn.Module):
+    """模块，用于在每一层中打印张量的形状"""
+    def __init__(self, layer_name=None):
+        super(PrintShape, self).__init__()
+        self.layer_name = layer_name
+
+    def forward(self, x):
+        if self.layer_name:
+            print(f"[{self.layer_name}] Shape: {x.shape}")
+        else:
+            print(f"Shape: {x.shape}")
+        return x
 
 class SEANetResnetBlock(nn.Module):
     """Residual block from SEANet model.
